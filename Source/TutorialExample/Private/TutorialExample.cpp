@@ -6,6 +6,8 @@
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
 #include "ObjectTools.h"
+#include "Misc/Paths.h"
+#include "FileHelpers.h"
 
 static const FName TutorialExampleTabName("TutorialExample");
 
@@ -47,31 +49,29 @@ void FTutorialExampleModule::ShutdownModule()
 void FTutorialExampleModule::PluginButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Entering world duplicate code."));
+
 	UObject* worldTemplateObj = StaticLoadObject(UWorld::StaticClass(), NULL, TEXT("/TutorialExample/BaseLevel"));
 	if (IsValid(worldTemplateObj)) 
 	{
 		ObjectTools::FPackageGroupName pgn;
-		pgn.ObjectName = TEXT("BaseWorld");
-		pgn.PackageName = TEXT("/Game/Maps/BaseLevel-COPY");
+		pgn.ObjectName = TEXT("BaseLevel");
+		pgn.PackageName = TEXT("/Game/Maps/BaseLevel");
 		TSet<UPackage*> objectsUserRefusedToFullyLoad;
 
 		UObject* worldObj = ObjectTools::DuplicateSingleObject(worldTemplateObj, pgn, objectsUserRefusedToFullyLoad);
 		if (IsValid(worldObj)) {
 			UWorld* world = CastChecked<UWorld>(worldObj);
+			FEditorFileUtils::SaveLevel(world->PersistentLevel);
+			FEditorFileUtils::LoadMap(TEXT("/Game/Maps/BaseLevel"));
 		} else {
-			UE_LOG(LogTemp, Warning, TEXT("Could not duplicate object."));
+			UE_LOG(LogTemp, Warning, TEXT("Could not duplicate object. Rejected by user?"));
 		}
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("World template invalid! Exiting."));
 		return;
 	}
 }
-	/*FText DialogText = FText::Format(
-							LOCTEXT("PluginButtonDialogText", "Add code to {0} in {1} to override this button's actions"),
-							FText::FromString(TEXT("FTutorialExampleModule::PluginButtonClicked()")),
-							FText::FromString(TEXT("TutorialExample.cpp"))
-					   );
-	FMessageDialog::Open(EAppMsgType::Ok, DialogText);*/
+	
 
 void FTutorialExampleModule::RegisterMenus()
 {
