@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "TutorialExample",
+	"Description": "A plugin that does several things.",
+	"Category": "Other",
+	"CreatedBy": "Benteveo Kiwi",
+	"CreatedByURL": "https://www.benteveo.kiwi/",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "TutorialExample",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
