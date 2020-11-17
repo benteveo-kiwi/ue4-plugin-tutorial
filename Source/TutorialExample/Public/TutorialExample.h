@@ -22,9 +22,12 @@ public:
 private:
 
 	void RegisterMenus();
+	void RegisterAssetTools();
+	void UnregisterAssetTools();
 	//ObjectTools::FPackageGroupName pgn;
 
 
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
+	TArray<TSharedRef<IAssetTypeActions>> RegisteredAssetTypeActions;
 };

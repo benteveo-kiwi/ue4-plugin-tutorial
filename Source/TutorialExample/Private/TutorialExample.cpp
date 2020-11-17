@@ -3,11 +3,17 @@
 #include "TutorialExample.h"
 #include "TutorialExampleStyle.h"
 #include "TutorialExampleCommands.h"
+#include "ExampleMenuActions.h"
+
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
 #include "ObjectTools.h"
 #include "Misc/Paths.h"
 #include "FileHelpers.h"
+#include "IAssetTools.h"
+#include "AssetToolsModule.h"
+
+
 
 static const FName TutorialExampleTabName("TutorialExample");
 
@@ -30,11 +36,13 @@ void FTutorialExampleModule::StartupModule()
 		FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FTutorialExampleModule::RegisterMenus));
+
+	RegisterAssetTools();
 }
 
 void FTutorialExampleModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
+	// This function may be called during shutdown to clean up your module. For modules that support dynamic reloading,
 	// we call this function before unloading the module.
 
 	UToolMenus::UnRegisterStartupCallback(this);
@@ -44,6 +52,8 @@ void FTutorialExampleModule::ShutdownModule()
 	FTutorialExampleStyle::Shutdown();
 
 	FTutorialExampleCommands::Unregister();
+
+	UnregisterAssetTools();
 }
 
 void FTutorialExampleModule::PluginButtonClicked()
@@ -97,6 +107,34 @@ void FTutorialExampleModule::RegisterMenus()
 		}
 	}
 }
+
+/** Registers asset tool actions. */
+void FTutorialExampleModule::RegisterAssetTools()
+{
+	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+
+	auto Action = MakeShareable(new FExampleMenuActions());
+	
+	AssetTools.RegisterAssetTypeActions(Action);
+	RegisteredAssetTypeActions.Add(Action);
+}
+
+/** Unregisters asset tool actions. */
+void FTutorialExampleModule::UnregisterAssetTools()
+{
+	FAssetToolsModule* AssetToolsModule = FModuleManager::GetModulePtr<FAssetToolsModule>("AssetTools");
+
+	if (AssetToolsModule != nullptr)
+	{
+		IAssetTools& AssetTools = AssetToolsModule->Get();
+
+		for (auto Action : RegisteredAssetTypeActions)
+		{
+			AssetTools.UnregisterAssetTypeActions(Action);
+		}
+	}
+}
+
 
 #undef LOCTEXT_NAMESPACE
 	
