@@ -108,7 +108,6 @@ void FTutorialExampleModule::RegisterMenus()
 	}
 }
 
-/** Registers asset tool actions. */
 void FTutorialExampleModule::RegisterAssetTools()
 {
 	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
@@ -119,7 +118,6 @@ void FTutorialExampleModule::RegisterAssetTools()
 	RegisteredAssetTypeActions.Add(Action);
 }
 
-/** Unregisters asset tool actions. */
 void FTutorialExampleModule::UnregisterAssetTools()
 {
 	FAssetToolsModule* AssetToolsModule = FModuleManager::GetModulePtr<FAssetToolsModule>("AssetTools");

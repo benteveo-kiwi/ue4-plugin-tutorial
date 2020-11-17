@@ -26,15 +26,24 @@ void FExampleMenuActions::GetActions(const TArray<UObject*>& InObjects, FMenuBui
 {
 	FAssetTypeActions_Base::GetActions(InObjects, MenuBuilder);
 
-	auto TextAssets = GetTypedWeakObjectPtrs<UObject>(InObjects);
+	auto WorldAssets = GetTypedWeakObjectPtrs<UWorld>(InObjects);
 
 	MenuBuilder.AddMenuEntry(
-		LOCTEXT("TextAsset_ReverseText", "Reverse Text"),
-		LOCTEXT("TextAsset_ReverseTextToolTip", "Reverse the text stored in the selected text asset(s)."),
+		LOCTEXT("TextAsset_ReverseText", "Add Sublevel"),
+		LOCTEXT("TextAsset_ReverseTextToolTip", "Adds a sublevel to the base level."),
 		FSlateIcon(),
 		FUIAction(
 			FExecuteAction::CreateLambda([=] {
 				UE_LOG(LogTemp, Warning, TEXT("Right click OK."));
+				}),
+			FCanExecuteAction::CreateLambda([=] {
+					UE_LOG(LogTemp, Warning, TEXT("Checking if should show in menu."));
+					return true;
+				})
+			)
+	);
+}
+
 				/*for (auto& TextAsset : TextAssets)
 				{
 					if (TextAsset.IsValid() && !TextAsset->Text.IsEmpty())
@@ -44,23 +53,6 @@ void FExampleMenuActions::GetActions(const TArray<UObject*>& InObjects, FMenuBui
 						TextAsset->MarkPackageDirty();
 					}
 				}*/
-				}),
-			FCanExecuteAction::CreateLambda([=] {
-					UE_LOG(LogTemp, Warning, TEXT("Checking if should show in menu."));
-					return true;
-					/*for (auto& TextAsset : TextAssets)
-					{
-						if (TextAsset.IsValid() && !TextAsset->Text.IsEmpty())
-						{
-							return true;
-						}
-					}
-					return false;*/
-				})
-			)
-	);
-}
-
 
 uint32 FExampleMenuActions::GetCategories()
 {
@@ -70,7 +62,7 @@ uint32 FExampleMenuActions::GetCategories()
 
 FText FExampleMenuActions::GetName() const
 {
-	return NSLOCTEXT("AssetTypeActions", "AssetTypeActions_TextAsset", "Text Asset");
+	return NSLOCTEXT("AssetTypeActions", "AssetTypeActions_Map", "Map");
 }
 
 
