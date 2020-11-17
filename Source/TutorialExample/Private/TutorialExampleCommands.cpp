@@ -6,7 +6,7 @@
 
 void FTutorialExampleCommands::RegisterCommands()
 {
-	UI_COMMAND(PluginAction, "TutorialExample", "Execute TutorialExample action", EUserInterfaceActionType::Button, FInputGesture());
+	UI_COMMAND(PluginAction, "Create Base Level", "Execute TutorialExample action", EUserInterfaceActionType::Button, FInputGesture());
 }
 
 #undef LOCTEXT_NAMESPACE
