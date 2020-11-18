@@ -37,7 +37,16 @@ void FExampleMenuActions::GetActions(const TArray<UObject*>& InObjects, FMenuBui
 				UE_LOG(LogTemp, Warning, TEXT("Right click OK."));
 				}),
 			FCanExecuteAction::CreateLambda([=] {
-					UE_LOG(LogTemp, Warning, TEXT("Checking if should show in menu."));
+					for (auto& World : WorldAssets)
+					{
+						if (World.IsValid()) {
+							// Cannot add BaseLevel to itself.
+							if (World->GetMapName() == FString(TEXT("BaseLevel")))
+							{
+								return false;
+							}
+						}
+					}
 					return true;
 				})
 			)

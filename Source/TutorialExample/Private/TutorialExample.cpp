@@ -4,6 +4,7 @@
 #include "TutorialExampleStyle.h"
 #include "TutorialExampleCommands.h"
 #include "ExampleMenuActions.h"
+#include "TutorialExampleSettings.h"
 
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
@@ -60,19 +61,19 @@ void FTutorialExampleModule::PluginButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Entering world duplicate code."));
 
-	UObject* worldTemplateObj = StaticLoadObject(UWorld::StaticClass(), NULL, TEXT("/TutorialExample/BaseLevel"));
+	UObject* worldTemplateObj = StaticLoadObject(UWorld::StaticClass(), NULL, *TutorialExampleSettings::BaseLevelTemplate);
 	if (IsValid(worldTemplateObj)) 
 	{
 		ObjectTools::FPackageGroupName pgn;
 		pgn.ObjectName = TEXT("BaseLevel");
-		pgn.PackageName = TEXT("/Game/Maps/BaseLevel");
+		pgn.PackageName = TutorialExampleSettings::BaseLevel;
 		TSet<UPackage*> objectsUserRefusedToFullyLoad;
 
 		UObject* worldObj = ObjectTools::DuplicateSingleObject(worldTemplateObj, pgn, objectsUserRefusedToFullyLoad);
 		if (IsValid(worldObj)) {
 			UWorld* world = CastChecked<UWorld>(worldObj);
 			FEditorFileUtils::SaveLevel(world->PersistentLevel);
-			FEditorFileUtils::LoadMap(TEXT("/Game/Maps/BaseLevel"));
+			FEditorFileUtils::LoadMap(TutorialExampleSettings::BaseLevel);
 		} else {
 			UE_LOG(LogTemp, Warning, TEXT("Could not duplicate object. Rejected by user?"));
 		}
