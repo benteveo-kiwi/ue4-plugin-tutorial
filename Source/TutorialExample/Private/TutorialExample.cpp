@@ -61,6 +61,14 @@ void FTutorialExampleModule::PluginButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Entering world duplicate code."));
 
+	FText DialogText = FText::FromString("This action will replace your default levels. Continue?");
+	auto ReturnValue = FMessageDialog::Open(EAppMsgType::YesNo, DialogText);
+
+	if (ReturnValue == EAppReturnType::No)
+	{
+		return;
+	}
+
 	UObject* worldTemplateObj = StaticLoadObject(UWorld::StaticClass(), NULL, *TutorialExampleSettings::BaseLevelTemplate);
 	if (IsValid(worldTemplateObj)) 
 	{
