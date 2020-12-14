@@ -42,6 +42,7 @@ public class TutorialExample : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"EngineSettings"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

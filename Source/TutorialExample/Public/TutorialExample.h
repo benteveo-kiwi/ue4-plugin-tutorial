@@ -18,13 +18,14 @@ public:
 	
 	/** This function will be bound to Command. */
 	void PluginButtonClicked();
+
+	void ChangeDefaultLevels(UWorld* BaseLevel);
 	
 private:
 
 	void RegisterMenus();
 	void RegisterAssetTools();
 	void UnregisterAssetTools();
-	//ObjectTools::FPackageGroupName pgn;
 
 
 private:

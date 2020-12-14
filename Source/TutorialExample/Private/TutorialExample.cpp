@@ -13,8 +13,7 @@
 #include "FileHelpers.h"
 #include "IAssetTools.h"
 #include "AssetToolsModule.h"
-
-
+#include "GameMapsSettings.h"
 
 static const FName TutorialExampleTabName("TutorialExample");
 
@@ -59,10 +58,10 @@ void FTutorialExampleModule::ShutdownModule()
 
 void FTutorialExampleModule::PluginButtonClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Entering world duplicate code."));
+	UE_LOG(LogTemp, Log, TEXT("Entering World duplicate code."));
 
 	FText DialogText = FText::FromString("This action will replace your default levels. Continue?");
-	auto ReturnValue = FMessageDialog::Open(EAppMsgType::YesNo, DialogText);
+	EAppReturnType::Type ReturnValue = FMessageDialog::Open(EAppMsgType::YesNo, DialogText);
 
 	if (ReturnValue == EAppReturnType::No)
 	{
@@ -79,9 +78,10 @@ void FTutorialExampleModule::PluginButtonClicked()
 
 		UObject* worldObj = ObjectTools::DuplicateSingleObject(worldTemplateObj, pgn, objectsUserRefusedToFullyLoad);
 		if (IsValid(worldObj)) {
-			UWorld* world = CastChecked<UWorld>(worldObj);
-			FEditorFileUtils::SaveLevel(world->PersistentLevel);
+			UWorld* World = CastChecked<UWorld>(worldObj);
+			FEditorFileUtils::SaveLevel(World->PersistentLevel);
 			FEditorFileUtils::LoadMap(TutorialExampleSettings::BaseLevel);
+			ChangeDefaultLevels(World);
 		} else {
 			UE_LOG(LogTemp, Warning, TEXT("Could not duplicate object. Rejected by user?"));
 		}
@@ -89,6 +89,16 @@ void FTutorialExampleModule::PluginButtonClicked()
 		UE_LOG(LogTemp, Warning, TEXT("World template invalid! Exiting."));
 		return;
 	}
+}
+
+void FTutorialExampleModule::ChangeDefaultLevels(UWorld * BaseLevel) 
+{
+	UE_LOG(LogTemp, Log, TEXT("Changing default levels."));
+
+	UGameMapsSettings::SetGameDefaultMap(BaseLevel->GetPathName());
+
+	UGameMapsSettings* settings = UGameMapsSettings::GetGameMapsSettings();
+	settings->EditorStartupMap = BaseLevel;
 }
 	
 
