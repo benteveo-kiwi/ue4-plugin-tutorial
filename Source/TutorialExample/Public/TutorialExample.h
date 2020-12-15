@@ -20,6 +20,10 @@ public:
 	void PluginButtonClicked();
 
 	void ChangeDefaultLevels(UWorld* BaseLevel);
+
+	void CreateNewKeybindings();
+
+	void CreateNewKeybinding(FName Name, FKey Key);
 	
 private:
 

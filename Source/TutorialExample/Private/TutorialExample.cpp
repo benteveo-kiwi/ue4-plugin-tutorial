@@ -14,6 +14,7 @@
 #include "IAssetTools.h"
 #include "AssetToolsModule.h"
 #include "GameMapsSettings.h"
+#include "GameFramework/InputSettings.h"
 
 static const FName TutorialExampleTabName("TutorialExample");
 
@@ -60,7 +61,7 @@ void FTutorialExampleModule::PluginButtonClicked()
 {
 	UE_LOG(LogTemp, Log, TEXT("Entering World duplicate code."));
 
-	FText DialogText = FText::FromString("This action will replace your default levels. Continue?");
+	FText DialogText = FText::FromString("This action will replace your default levels and create new keybindings. Continue?");
 	EAppReturnType::Type ReturnValue = FMessageDialog::Open(EAppMsgType::YesNo, DialogText);
 
 	if (ReturnValue == EAppReturnType::No)
@@ -82,6 +83,7 @@ void FTutorialExampleModule::PluginButtonClicked()
 			FEditorFileUtils::SaveLevel(World->PersistentLevel);
 			FEditorFileUtils::LoadMap(TutorialExampleSettings::BaseLevel);
 			ChangeDefaultLevels(World);
+			CreateNewKeybindings();
 		} else {
 			UE_LOG(LogTemp, Warning, TEXT("Could not duplicate object. Rejected by user?"));
 		}
@@ -97,10 +99,26 @@ void FTutorialExampleModule::ChangeDefaultLevels(UWorld * BaseLevel)
 
 	UGameMapsSettings::SetGameDefaultMap(BaseLevel->GetPathName());
 
-	UGameMapsSettings* settings = UGameMapsSettings::GetGameMapsSettings();
-	settings->EditorStartupMap = BaseLevel;
+	UGameMapsSettings* Settings = UGameMapsSettings::GetGameMapsSettings();
+	Settings->EditorStartupMap = BaseLevel;
 }
+
+void FTutorialExampleModule::CreateNewKeybindings() 
+{
+	UE_LOG(LogTemp, Log, TEXT("Changing default levels."));
 	
+	CreateNewKeybinding(FName(TEXT("OurPlugin_ChangeLocation")), FKey(TEXT("Q")));
+	CreateNewKeybinding(FName(TEXT("OurPlugin_ChangeLevel")), FKey(TEXT("W")));
+}
+
+void FTutorialExampleModule::CreateNewKeybinding(FName Name, FKey Key) 
+{
+	UInputSettings* Settings = UInputSettings::GetInputSettings();
+
+	Settings->RemoveActionMapping(FInputActionKeyMapping(Name, Key));
+	Settings->AddActionMapping(FInputActionKeyMapping(Name, Key));
+	Settings->SaveKeyMappings();
+}
 
 void FTutorialExampleModule::RegisterMenus()
 {
